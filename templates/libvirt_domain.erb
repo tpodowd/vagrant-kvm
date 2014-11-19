@@ -17,6 +17,14 @@
     <type arch='<%= arch %>' machine='<%= machine_type %>'>hvm</type>
     <boot dev='hd'/>
   </os>
+  <% if cpu_model %>
+  <cpu match='exact'>
+    <model><%= cpu_model %></model>
+    <% cpu_features.each do |policy, name| %>
+    <feature policy='<%= policy %>' name='<%= name %>'/>
+    <% end %>
+  </cpu>
+  <% end %>
   <features>
     <acpi/>
     <apic/>

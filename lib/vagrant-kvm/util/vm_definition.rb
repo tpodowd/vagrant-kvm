@@ -87,6 +87,15 @@ module VagrantPlugins
           if doc.elements["/domain/uuid"]
             update({:uuid => doc.elements["/domain/uuid"].text})
           end
+          if doc.elements["/domain/cpu/model"]
+            cpu_features = []
+            doc.elements.each("/domain/cpu/feature") do |cpu_feature|
+              cpu_features << [cpu_feature.attributes["policy"],
+                               cpu_feature.attributes["name"]]
+            end
+            update({:cpu_model => doc.elements["/domain/cpu/model"].text,
+                    :cpu_features => cpu_features})
+          end
           # VNC
           if doc.elements["//devices/graphics"]
             attrs = doc.elements["//devices/graphics"].attributes

@@ -176,8 +176,16 @@ then you can simply run `vagrant up` to use the kvm provider.
 
 There are some provider specific parameter to control VM definition.
 
-* `cpu_model` - cpu architecture: 'i686' or 'x86\_64': default is x86\_64. Note
-  that your base box should specify this.
+* `cpu_model` - CPU model to use for the guest. This parameter can be used to
+                enable nested virtualization when paired with the `cpu_feature`
+                parameter. Typical value might be "core2duo".
+* `cpu_feature` - Specify CPU features that you want in the guest. This can be
+                used to enable nested virtualization when paired with the
+                `cpu_model` parameter. This parameter takes two options; the
+                `policy` and the `name` of the feature. You can specify the
+                `cpu_feature` parameter many times to enable multiple features.
+                This parameter is only used if the `cpu_model` parameter is
+                defined.
 * `core_number` - number of cpu cores.
 * `memory_size` - memory size such as 512m, 1GiB, 100000KiB, unit is KiB if
   unspecified.
@@ -214,6 +222,15 @@ image. This is slower but allows multiple VMs to be booted at the same time.
 * `virtio_rng` - boolean for optional virtio device of random number generator.
   QEMU 1.3.0 and after support this device. default `false`
 
+### Example KVM provider section of the Vagrantfile
+
+```ruby
+config.vm.provider "kvm" do |k|
+  k.cpu_model = "core2duo"
+  k.cpu_feature :require, "vmx"
+  k.cpu_feature :require, "ht"
+end
+```
 
 ## Comparison with [Vagrant-libvirt](https://github.com/pradels/vagrant-libvirt)
 

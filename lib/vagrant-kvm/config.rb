@@ -48,10 +48,15 @@ module VagrantPlugins
       # @return [String]
       attr_accessor :qemu_bin
 
-      # cpu model
+      # CPU model requested by the guest
       #
-      # @return [String]: x86_64/i386
+      # @return [String]
       attr_accessor :cpu_model
+
+      # An array of CPU features provided by the CPU model
+      #
+      # @return [Array]
+      attr_reader :cpu_features
 
       # memory size in bytes
       # default: defined in box
@@ -95,6 +100,7 @@ module VagrantPlugins
         @image_mode       = UNSET_VALUE
         @qemu_bin         = UNSET_VALUE
         @cpu_model        = UNSET_VALUE
+        @cpu_features     = []
         @memory_size      = UNSET_VALUE
         @core_number      = UNSET_VALUE
         @vnc_port         = UNSET_VALUE
@@ -126,6 +132,16 @@ module VagrantPlugins
         @customizations << [event, command]
       end
 
+      # Define CPU features desired when defining the cpu_model
+      #
+      # Call multiple times to add different features
+      # @param policy The meaning of the feature depends on the policy
+      #               :force, :require, :optional, :disable, :forbid
+      # @param name The name of the CPU feature.
+      def cpu_feature(policy, name)
+        @cpu_features << [policy, name]
+      end
+
       # This is the hook that is called to finalize the object before it
       # is put into use.
       def finalize!
@@ -150,9 +166,9 @@ module VagrantPlugins
         end
         # Search qemu binary with the default behavior
         @qemu_bin = nil if @qemu_bin == UNSET_VALUE
-        # Default cpu model is x86_64, acceptable only x86_64/i686
-        @cpu_model = 'x86_64' if @cpu_model == UNSET_VALUE
-        @cpu_model = 'x86_64' unless @cpu_model =~ /^(i686|x86_64)$/
+        # CPU model is unset by default.
+        @cpu_model = nil if @cpu_model == UNSET_VALUE
+        @cpu_features = [] if @cpu_features == UNSET_VALUE
         # Process memory size directive
         # accept the case
         # integer recgnized as KiB

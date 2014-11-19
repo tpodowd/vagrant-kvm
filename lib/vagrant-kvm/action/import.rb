@@ -33,6 +33,7 @@ module VagrantPlugins
             :qemu_bin      => provider_config.qemu_bin,
             :cpus          => provider_config.core_number,
             :cpu_model     => provider_config.cpu_model,
+            :cpu_features  => provider_config.cpu_features,
             :machine_type  => provider_config.machine_type,
             :network_model => provider_config.network_model,
             :video_model   => provider_config.video_model,

@@ -16,8 +16,8 @@ describe  VagrantPlugins::ProviderKvm::Config do
   end
 
   describe "#cpu_model" do
-    it "default to x86-64" do
-      should_default(:cpu_model, 'x86_64')
+    it "defaults to nil" do
+      should_default(:cpu_model, nil)
     end
   end
 
